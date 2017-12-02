@@ -1,6 +1,6 @@
 <?php
-include_once("module/Person.php");
-$objArr=getAllData();
+require "student.php";
+$objArr = getAllData();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,68 +12,99 @@ $objArr=getAllData();
 			margin: 0;
 			padding: 0;
 		}
-		table{
-			text-align: center;
-			margin: 50px auto;
+		body{
+			background: #ebebeb;
+		}
+		.main{
 			width: 800px;
+			margin: 100px auto;
+			padding: 40px 100px;
+			box-sizing: border-box;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+		}
+		.main>a{
+			text-decoration: none;
+			float: right;
+		}
+		.main>a:hover{
+			color: red;
+		}
+		.main>table{
+			width: 600px;
 			border-collapse: collapse;
 			border: 1px solid #000;
 		}
+		th{
+			background: #ccc;
+		}
 		th,td{
-			border: 1px solid #000;
 			height: 35px;
+			text-align: center;
+			border: 1px solid #000;
 		}
-		.td{
-			text-align: right;
-			padding-right: 10px;
-		}
-		div{
+        #updateDocument{
 			width: 100%;
-			height: 50px;
-			background: #f1f1f1;
-			box-sizing: border-box;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: rgba(0, 0, 0, 0.7);
+			display: none;
 		}
-		div input{
-			float: right;
-			margin-right: 20px;
-			margin-top: 15px;
-		}
+		.update{
+            width: 500px;
+            border:1px solid #d3d3d3;
+            background-color: #fff;
+            margin: 100px auto;
+            box-shadow: 0 6px 20px 4px rgba(255, 255, 255, 0.4);
+            position: relative
+        } 
+        .update table{
+        	width: 250px;
+        	height: 250px;
+        	margin: 0 auto;
+        }
+        .update table,.update td,.update tr{
+        	border: none;
+        }
+        .update select{
+        	width: 160px;
+        }
+        .update input[type="button"]{
+        	width: 94px;
+	        height: 34px;
+	        background-color: #009efb;
+	        border:1px solid #009efb;
+	        color:#fff;
+	        border-radius: 4px;
+	        font-size:16px;
+	        cursor:pointer;
+        }
 	</style>
 </head>
 <body>
-	<div>
-		<?php
-			session_start();
-			$str="";
-			if (isset($_SESSION["use"])) {
-				$str .= "<input type='button' value='退出' id='login'/>";
-			}else{
-				$str .= "<input type='button' value='登录' id='login'/>";
-			}
-			echo $str;
-		?>
-	</div>
+<div class="main">
+	<a href="add.php" id="add">点此添加数据</a>
 	<table>
-		<tr>
-			<td colspan="6" class="td"><input type="button" value="新增" id="add"></td>
-		</tr>
-		<tr>
-			<th>编号</th>
-			<th>姓名</th>
-			<th>年龄</th>
-			<th>性别</th>
-			<th>学历</th>
-			<th>编辑</th>
-		</tr>
-		<?php
-			$str="";
-			foreach ($objArr as $value) {
-				$str.="<tr>";
-				$str.="<td>{$value->id}</td>";
-				$str.="<td>{$value->name}</td>";
-				$str.="<td>{$value->age}</td>";
-				$str.="<td>{$value->gender}</td>";
-				switch (trim($value->edu)) {
+	<tr>
+		<th>学号</th>
+		<th>姓名</th>
+		<th>性别</th>
+		<th>年龄</th>
+		<th>学历</th>
+		<th>编辑</th>
+	</tr>
+	<?php
+		$str = "";
+		foreach ($objArr as $key => $value) {
+			$str .= "<tr>";
+			$str .= "<td>{$value->id}</td>";
+			$str .= "<td>{$value->name}</td>";
+			$str .= "<td>{$value->gender}</td>";
+			$str .= "<td>{$value->age}</td>";
+			switch (trim($value->edu)) {
 					case "0":
 					$str.="<td>初中</td>";
 						break;
@@ -96,24 +127,15 @@ $objArr=getAllData();
 					$str.="<td>其他</td>";
 						break;
 				};
-				$str.="<td><a href='edit.php?id={$value->id}'>修改</a> <a class='del' href='del.php?id={$value->id}'>删除</a></td>";
+				$str.="<td><a href='update.php?id={$value->id}'>修改</a> <a class='del' href='del.php?id={$value->id}'>删除</a></td>";
 				$str.="</tr>";
 			}
 			echo $str;
-		?>
-	</table>
+	?>
+</table>
+</div>
 </body>
 <script>
-	document.getElementById("add").onclick=function(){
-		window.location="add.php";
-	}
-	document.getElementById("login").onclick=function(){
-		if(this.value=="登录"){
-			window.location="login.php";
-		}else{
-			window.location="loginOut.php";
-		}
-	}
 	var delArr=document.getElementsByClassName("del");
 	for(var i = 0 ; i < delArr.length; i ++) {
 		delArr[i].onclick = function(){
@@ -122,12 +144,6 @@ $objArr=getAllData();
 			}
 			return false;
 		}
-	}
-	document.getElementById("del").onclick=function(){
-		if(confirm("Are you sure?")){
-			window.location=this.href;
-		}
-		return false;
 	}
 </script>
 </html>
